@@ -1,0 +1,31 @@
+{
+    "name": "thewindear/easyswoole-event-bus",
+    "description": "easyswoole 事件总线",
+    "autoload": {
+        "psr-4": {
+            "Thewindear\\EasyswooleEventBus\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Test\\": "tests"
+        }
+    },
+    "authors": [
+        {
+            "name": "thewindear",
+            "email": "thewindear@Outlook.com"
+        }
+    ],
+    "require": {
+        "php": "^7.4",
+        "ext-swoole": ">=4.4.0",
+        "easyswoole/component": "^2.3",
+        "easyswoole/queue": "3.x",
+        "easyswoole/redis-pool": "^2.2"
+    },
+    "require-dev": {
+        "easyswoole/phpunit": "^1.1",
+        "easyswoole/swoole-ide-helper": "^1.3"
+    }
+}
