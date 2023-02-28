@@ -3,3 +3,5 @@
 > 支持同步和异步，单个Event绑定多个Listener。思想源至Laravel的Event，不过实现没他那么复杂
 > 
 > 可以看 tests 相关用法
+> 
+_暂时没有实现 不同Event放到不同的队列中_
