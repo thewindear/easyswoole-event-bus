@@ -3,7 +3,6 @@
 namespace Thewindear\EasyswooleEventBus;
 
 use EasySwoole\Component\Singleton;
-use EasySwoole\Queue\Driver\RedisQueue;
 use EasySwoole\Queue\Job;
 use EasySwoole\Queue\Queue;
 use EasySwoole\Queue\QueueDriverInterface;
@@ -11,6 +10,7 @@ use EasySwoole\Queue\QueueDriverInterface;
 class EventBus
 {
     use Singleton;
+    use CallListener;
 
     public static array $listen = [
     ];
@@ -36,7 +36,7 @@ class EventBus
      * 获取队列
      * @return Queue
      */
-    public function getQueue()
+    public function getQueue(): Queue
     {
         return $this->queue;
     }
@@ -56,7 +56,7 @@ class EventBus
             throw new \TypeError("{$event} Does not inherit from Event");
         }
         if (count($listen) != 2) {
-            throw new \LengthException("listen argument Formatting error");
+            throw new \InvalidArgumentException("The Listener array format is: ['ListenerClassName', 'ListenerMethodName']");
         }
         if (empty(self::$listen[$eventRefClass->getName()])) {
             self::$listen[$eventRefClass->getName()] = [];
@@ -76,11 +76,9 @@ class EventBus
      */
     public function fireSync(Event $event)
     {
-        foreach(self::$listen as $eventName=>$listens) {
+        foreach(self::$listen as $eventName=>$listeners) {
             if ($event instanceof $eventName) {
-                foreach(self::$listen[$eventName] as $callback) {
-                    call_user_func([new $callback[0], $callback[1]], $event);
-                }
+                self::callListeners($listeners, $event);
             }
         }
     }
@@ -101,4 +99,5 @@ class EventBus
         }
         return $this->queue->producer()->push($job);
     }
+
 }

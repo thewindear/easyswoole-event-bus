@@ -33,14 +33,11 @@ class EventBusTest extends TestCase
 
     public function testFireSync()
     {
-        EventBus::getInstance()->add(DemoEvent::class, [ListenerOne::class, 'handle']);
         EventBus::getInstance()->fireSync(new DemoEvent(['username'=>'root', 'ip'=>'127.0.0.1']));
     }
 
     public function testFireAsync()
     {
-        EventBus::getInstance()->add(DemoEvent::class, [ListenerOne::class, 'handle']);
-        EventBus::getInstance()->add(DemoEvent::class, [ListenerTwo::class, 'handle']);
         $this->assertEquals(true, EventBus::getInstance()->fireAsync(new DemoEvent(['username'=>'root', 'ip'=>'127.0.0.1'])), 'delivery failure');
     }
 
@@ -53,11 +50,9 @@ class EventBusTest extends TestCase
         }
     }
 
-    public function testEventHandle()
+    public function testEventProcessListen()
     {
-        EventBus::getInstance()->add(DemoEvent::class, [ListenerOne::class, 'handle']);
-        EventBus::getInstance()->add(DemoEvent::class, [ListenerTwo::class, 'handle']);
-        EventProcess::handle();
+        EventProcess::listen();
     }
 
 }

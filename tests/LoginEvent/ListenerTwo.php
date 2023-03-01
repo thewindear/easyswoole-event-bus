@@ -13,6 +13,6 @@ class ListenerTwo
 
     public function failed(DemoEvent $event, \Exception $e)
     {
-        file_put_contents(__DIR__ . "/test_exception.log", $e->getMessage());
+        file_put_contents(__DIR__ . "/test_exception.log", "{$e->getMessage()} data: {$event->toJSON()}");
     }
 }

@@ -9,9 +9,11 @@ use EasySwoole\Queue\Job;
 
 class EventProcess extends AbstractProcess
 {
+    use CallListener;
+
     protected function run($arg)
     {
-        self::handle();
+        self::listen();
     }
 
     /**
@@ -19,7 +21,7 @@ class EventProcess extends AbstractProcess
      * @return void
      * @throws \Throwable
      */
-    public static function handle()
+    public static function listen()
     {
         go(function () {
             EventBus::getInstance()->getQueue()->consumer()->listen(function (Job $job) {
@@ -35,20 +37,7 @@ class EventProcess extends AbstractProcess
         $className = $refObj->getName();
         $listeners = EventBus::getInstance()->getListeners($className);
         if (!empty($listeners)) {
-            foreach($listeners as $listener) {
-                // 这里开启协程进行消费
-                go(function () use ($listener, $event) {
-                    $listenerClassName = $listener[0];
-                    $listenerHandle = $listener[1];
-                    $instance = new $listenerClassName();
-                    try {
-                        $instance->$listenerHandle($event);
-                    } catch (\Throwable $e) {
-                        // 出现异常后调用failed方法将异常和event传入
-                        $instance->failed($event, $e);
-                    }
-                });
-            }
+            self::callListeners($listeners, $event, true);
         }
     }
 
